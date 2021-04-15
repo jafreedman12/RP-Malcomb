@@ -2,7 +2,7 @@
 
 Note: These instructions were developed for students in a course at Middlebury.  There is no guarantee that the DHS program will continue to approve projects for replication of this study in the future.
 
-1. Go to [https://dhsprogram.com/Data/](https://dhsprogram.com/Data/) 
+1. Go to [https://dhsprogram.com/Data/](https://dhsprogram.com/Data/)
 1. Create an account with your college e-mail address
 2. Within the Datasets menu, [Create a new project](https://dhsprogram.com/data/dataset_admin/index.cfm?action=createproject)
 1. Enter the following information:
@@ -400,7 +400,7 @@ And Summary of the 2010 Survey here: [https://www.dhsprogram.com/methodology/sur
   /SH416AC  "Assistance received for schooling"
   /SH416AD  "Assistance received for schooling"
   /SH416AX  "Assistance received for schooling"
- 
+
 ### MISSING VALUE
    HV026    (9)
   /HV040    (9999)
@@ -681,7 +681,7 @@ And Summary of the 2010 Survey here: [https://www.dhsprogram.com/methodology/sur
   /SH416AC  (9)
   /SH416AD  (9)
   /SH416AX  (9)
- 
+
 ### VALUE LABELS
    HV003   
       0 "Incomplete interview"
@@ -1111,7 +1111,7 @@ And Summary of the 2010 Survey here: [https://www.dhsprogram.com/methodology/sur
       3 "Yao"
       4 "English"
       6 "Other"
-  /SHLRESP 
+  /SHLRESP
       1 "Chichewa"
       2 "Tumbuka"
       3 "Yao"
@@ -1127,7 +1127,7 @@ And Summary of the 2010 Survey here: [https://www.dhsprogram.com/methodology/sur
       0 "Not at all"
       1 "Sometimes"
       2 "All the time"
-  /SHLRESO 
+  /SHLRESO
       5 "Mang'anja"
       6 "Lomwe"
       7 "Ndali"
@@ -1138,7 +1138,7 @@ And Summary of the 2010 Survey here: [https://www.dhsprogram.com/methodology/sur
      12 "Sena"
      13 "Nyanja"
      14 "Sukwa"
-  /SH111A2 
+  /SH111A2
       0 "No"
       1 "Yes"
   /SH111B  
@@ -1184,13 +1184,13 @@ And Summary of the 2010 Survey here: [https://www.dhsprogram.com/methodology/sur
   /SH139B  
       0 "Water not available"
       1 "Water available"
-  /SH139CA 
+  /SH139CA
       0 "No"
       1 "Soap or detergent (bar, liquid, powder or paste)"
-  /SH139CB 
+  /SH139CB
       0 "No"
       1 "Ash mud sand"
-  /SH139CY 
+  /SH139CY
       0 "No"
       1 "None"
   /SH140   
@@ -1940,18 +1940,18 @@ And Summary of the 2010 Survey here: [https://www.dhsprogram.com/methodology/sur
       0 "No"
       1 "Yes"
       8 "DK"
-  /SH416AA 
+  /SH416AA
       0 "No"
       1 "Money for school fees"
-  /SH416AB 
+  /SH416AB
       0 "No"
       1 "Other money"
-  /SH416AC 
+  /SH416AC
       0 "No"
       1 "Uniform"
-  /SH416AD 
+  /SH416AD
       0 "No"
       1 "Notebooks"
-  /SH416AX 
+  /SH416AX
       0 "No"
       1 "Other"

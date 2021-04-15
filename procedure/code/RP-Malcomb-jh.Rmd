@@ -35,9 +35,10 @@ sf_use_s2(T)
 
 ```{r download data}
 
-private_r = here("data","raw","private")
-public_r = here("data","raw","public")
+private_r = here("data","raw","private") #create link to private repository
+public_r = here("data","raw","public") #create link to public repository
 
+#Get data downloaded from zip files, load into folder structre in RP-Malcolm folder
 if (!"traditional_authorities" %in% list.files(public_r)){
   # Malawi administrative areas from GADM version 2.8 https://gadm.org/download_country_v2.html
   download("https://biogeo.ucdavis.edu/data/gadm2.8/shp/MWI_adm_shp.zip", here("data","raw","private", "MWI_adm_shp.zip"))
@@ -79,6 +80,7 @@ set_rdhs_config(
 ```
 
 ```{r downloading dhs data}
+# Download DHS data once you have logged in to the DHS account
 dhs_downloads = get_datasets(
   c("MWHR61SV", "MWGE62FL", "MWHR4ESV", "MWGE4BFL"),
   all_lower = FALSE,
@@ -106,8 +108,9 @@ dhshh_2010 = readRDS(dhs_downloads$MWHR61SV) %>% zap_labels()
 ```
 
 ```{r households to remove (2010)}
+#Remove missing households
 rmv_2010 = dhshh_2010 %>%  filter(
-  HV246A == 98 |
+    HV246A == 98 |
     HV246A == 99 |
     HV246D == 98 |
     HV246D == 99 |
@@ -154,18 +157,18 @@ ta_capacity_2010 = dhshh_2010 %>%
     HV207
   ) %>%
   # removing values based on index and where there are NAs 
-  filter(!HHID %in% rmv_2010) %>% 
+  filter(!HHID %in% rmv_2010) %>% # ! indicates logical negation (NOT)
   filter(!is.na(ta_id)) %>% 
   # 24030 obs. of 19 variables 
   # removing any surveys where all livestock values were NA
   filter(!(is.na(HV246A) & is.na(HV246D) & is.na(HV246E)  & is.na(HV246G) )) %>% 
   # 24028 obs. of 19 variables 
   # using rowwise() to find sum of livestock by household 
-  rowwise %>%
-  mutate(hhlivestock = sum(HV246A, HV246D, HV246E, HV246G, na.rm = T)) %>%
-  ungroup %>%
+  rowwise %>%  # group input by rows, compute on a data frame a row-at-a-time
+  mutate(hhlivestock = sum(HV246A, HV246D, HV246E, HV246G, na.rm = T)) %>% #sum all livestock, remove nulls
+  ungroup %>%  #ungroup the calculations with the rowwise function
   # using percent_rank(), those  
-  # in cases where desc() is used, having a greater value before ranked makes a household more vulnerable 
+  # in cases where desc() is used, having a greater value before ranked makes a household more vulnerable, rank everything as quintiles??
   mutate(
     livestock = percent_rank(hhlivestock) * 4 + 1,
     sick = percent_rank(desc(HV248)) * 4 + 1,
@@ -177,7 +180,7 @@ ta_capacity_2010 = dhshh_2010 %>%
     water = percent_rank(desc(HV204)) * 4 + 1,
     electricity = percent_rank(HV206) * 4 + 1,
     cooking = percent_rank(desc(HV226)) * 4 + 1,
-    sexcat = percent_rank(desc(HV219)) * 4 + 1,
+    sexcat = percent_rank(desc(HV219))* 4 + 1, #1 is male, 2 is female
     cellphone = percent_rank(desc(HV243A)) * 4 + 1,
     radio = percent_rank(HV207) * 4 + 1,
     urbanruralscore = ifelse(urban_rural == "U", 5, 1)
@@ -223,13 +226,15 @@ ta = left_join(
   by = c("ID_2" = "ta_id")
 )
 
-# making capacity score resemble malcomb et al's work 
+# making capacity score resemble malcomb et al's work (20% weight)
 ta = mutate(ta, capacity_2010 = capacity_2010 * 20)
 # 256 features 
 
 # preparing breaks for mapping using natural jenks method
 ta_brks = filter(ta, !is.na(capacity_2010)) %>% {classIntervals(.$capacity_2010, 4, style = "jenks")$brks}
 
+#lapply: apply a function over a list or a vector
+#make four classes of jenks for mapping/visualizing the data. Assign data to classes
 ta_int = lapply(1:4, function(x) paste0(round(ta_brks[x],2)," - ", round(ta_brks[x +1],2))) %>% unlist()
 
 ta = mutate(ta, capacity_2010_brks = case_when(
@@ -249,6 +254,7 @@ save(
 
 ```{r reading rasters into r}
 # UNEP layers
+#read_stars: read raster in to rstudio
 dr = read_stars(here("data", "raw", "public", "dr1010ipeykx.tif")) %>% 
   st_set_crs(4326) 
 
@@ -259,6 +265,7 @@ fl = read_stars(here("data", "raw", "public",  "fl1010irmt.tif")) %>%
 
 ```{r cleaning and reprojecting rasters}
 # creating blank raster in extent
+#extent of the raster layers/extent that our map will be in
 b = st_bbox(
   c(
     xmin = 35.9166666666658188,
@@ -270,11 +277,13 @@ b = st_bbox(
 ) %>%
   st_as_sfc()
 
+#using [[]] to subset data
 blank = st_as_stars(st_bbox(b), dx = 0.041667, dy = 0.041667)
-blank[[1]][] = NA
+blank[[1]][] = NA  #subset twice, once for the flood raster and one for the drought
 
 # reprojecting, clipping, and resampling rasters to new extent and cell size
 # use bilinear for drought to average continuous population exposure values
+#warp (rasample) grid from stars objects into new grid
 dr = st_warp(dr, blank, use_gdal = T, method = "bilinear")
 # use nearest neighbor for flood risk to preserve integer values
 fl = st_warp(fl, blank, method = "near")  
@@ -287,20 +296,23 @@ fl[[1]][] = nmrc
 
 ```{r rasterizing geometries}
 # clipping traditional authorities with livelihood zones in order to remove lake
+#st_clip: clip raster to polygon extent. Building the st_clip function
 st_clip = function(x,y) st_intersection(x, st_union(st_geometry(y)))
 
 st_agr(ta) = "constant"
 
+#Apply st_clip function to ta
 ta_2010 = st_clip(st_transform(filter(ta, is.na(capacity_2010) == F), 3395), st_buffer(st_transform(lhz, 3395), .01)) %>%
   st_transform(4326)
 # 222 features 
 
-# making capacity rasters 
+# RASTERIZE: making capacity rasters
 ta_capacity = st_rasterize(ta_2010[, 'capacity_2010'], blank)
 #lhz_capacity = st_rasterize(lhz[,'capacity'], blank) 
 ```
 
 ```{r function to calculate vulnerability}
+#this is like a raster calculator function to combine the multiple raster layers
 vulnerability = function(geo) {
   # creating mask layer
   mask = geo 
@@ -312,6 +324,7 @@ vulnerability = function(geo) {
   drought = dr * mask
   
   # reclassifying drought layer
+  #use [[]] to reference items in a list that have a list
   qt = quantile(drought[[1]], probs = seq(0, 1, 0.2), na.rm = T)
   
   drought = drought %>%
@@ -337,6 +350,7 @@ ta_2010$vuln = aggregate(ta_final,ta_2010,mean)$capacity_2010
 ```
 
 ```{r misc. map features}
+#convert to sf data type, create file called "lakes," containing lakes of malawi
 lakes = st_as_sf(read_csv(here(public_r, "major_lakes.csv"))[, c("name", "the_geom")],
                  wkt = "the_geom",
                  crs = 4326) %>%
