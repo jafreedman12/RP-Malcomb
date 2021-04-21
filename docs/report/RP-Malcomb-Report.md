@@ -46,26 +46,42 @@ The replication study will use R.
 ## Materials and Procedure
 
 ### ADAPTIVE CAPACITY WORKFLOW [ASSETS & ACCESS]
-
 1. Bring in DHS Data [Households Level] (vector)
-2. FIELD CALCULATOR: Normalize each indicator variable into quintiles (0 is lowest, 5 is highest--we understand this doesn’t make sense if there are only 5 categories, but this is what the authors said they did)
-3. FIELD CALCULATOR / ADD FIELD: Apply weights to normalized indicator variables to get scores for each category (assets, access)
-4. FIELD CALCULATOR / ADD FIELD: Combine assets and access into adaptive capacity
-5. AGGREGATE: Aggregate into villages
-6. AGGREGATE: Aggregate into TA geometries, calculate average adaptive capacity score (Assets + Access) for each TA (Spatial Join → Group By)
+2. Bring in TA (Traditional Authority boundaries) and LHZ (livelihood zones) data
+3. Get rid of unsuitable households (eliminate NULL and/or missing values)
+3. Join TA and LHZ ID data to the DHS clusters
+4. Pre-process the livestock data
+	Filter for NA livestock data
+	Update livestock data (summing different kinds)
+5. FIELD CALCULATOR: Normalize each indicator variable and rescale from 1-5 (real numbers) based on percent rank
+6. FIELD CALCULATOR / ADD FIELD: Apply weights to normalized indicator variables to get scores for each category (assets, access)
+7. SUMMARIZE/AGGREGATE: find the stats of the capacity of each TA (min, max, mean, sd)
+8. Join ta_capacity to TA based on ta_id
+	(Multiply by 20--meaningless??) I have a question about this (so do I) ln.216
+9. Prepare breaks for mapping
+Class intervals based on capacity_2010 field 
+Take the values and round them to 2 decimal places
+Put data in 4 classes based on break values
+10. Save the adaptive capacity scores
 
-**Results: Figs. 3 & 4 (for us, only most recent data will be used - equivalent to Fig. 4)**
-
-### HOUSEHOLD RESILIENCE & RASTER WORKFLOW [FINAL DELIVERABLE]
-
-7. Bring in FEWSNET data (polygon***) and UNEP/GRID data (raster)
-8. FIELD CALCULATOR: quintile (assign scores 0-5) and weight FEWSNET data
-9. RASTER CALCULATOR: quintile (assign scores 0-5) and weight UNEP/GRID data
-10. RASTERIZE: turn household resilience at TA level into raster data at pixel size (30m? 90m?) of FEWSNET and UNEP
-11. RASTER CALCULATOR: Using FEWSNET, UNEP/GRID, and rasterized DHS resilience data; Calculate household resilience using the following formula:
-Household Resilience = Adaptive Capacity + Livelihood Sensitivity - Physical Exposure
-
-**Results: Fig. 5**
+11. Load in UNEP raster
+Set CRS for drought
+Set CRS for flood
+12.  Clean and reproject rasters
+Create a bounding box at extent of Malawi Where does this info come from
+Add geometry info and precision (st_as_sfc)
+For Drought: use bilinear to avg continuous population exposure values
+For Flood: use nearest neighbor to preserve integer values
+13. CLIP the traditional authorities with the LHZs to cut out the lake
+14. RASTERIZE the ta_capacity data with pixel data corresponding to capacity_2010 field
+15. RASTER CALCULATOR: 
+Create a mask
+Reclassify the flood layer (quintiles, currently binary)
+Reclassify the drought values (quantile [from 0 - 1 in intervals of 0.2 =5])
+Add component rasters for final weighted score of drought + flood
+16. AGGREGATE: Create final vulnerability layer using envi. vulnerability score and ta_capacity I’m a little confused about how exactly this happens, but seems to be averaging the ta_final (which corresponds to vulnerability) and ta_2010 columns
+	
+Also, where does LHZ enter into this final value?
 
 
 ## Replication Results

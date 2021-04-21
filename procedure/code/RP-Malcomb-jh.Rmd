@@ -314,18 +314,18 @@ ta_capacity = st_rasterize(ta_2010[, 'capacity_2010'], blank)
 ```{r function to calculate vulnerability}
 #this is like a raster calculator function to combine the multiple raster layers
 vulnerability = function(geo) {
-  # creating mask layer
+  # creating mask layer, if we don't have TA capacity in a spot, have data not show up (like on lake)
   mask = geo 
   mask[mask > 0] = 1
   mask[mask == 0] = NA
   
   # masking flood and drought 
-  flood = fl * mask * 4
+  flood = fl * mask * 4  #Flood data is already in classes of 1-5, the multiplying by 4 here normalizes everything to 20 (like in the Malcomb review)
   drought = dr * mask
   
-  # reclassifying drought layer
+  # reclassifying drought layer into categories of 1-5
   #use [[]] to reference items in a list that have a list
-  qt = quantile(drought[[1]], probs = seq(0, 1, 0.2), na.rm = T)
+  qt = quantile(drought[[1]], probs = seq(0, 1, 0.2), na.rm = T) #go from 0-1 at intervals of 0.2 (5 intervals))
   
   drought = drought %>%
     mutate(
@@ -336,7 +336,7 @@ vulnerability = function(geo) {
         drought[[1]] <= qt[[5]] ~ 4,
         drought[[1]] > qt[[5]] ~ 5
       )
-    ) %>% select(recoded) * 4
+    ) %>% select(recoded) * 4 #the multiplying by 4 here normalizes everything to 20 (like in the Malcomb review)
   
   # final output (adding component rasters)
   final = (40 - geo) * 0.40 + drought * 0.20 + flood * 0.20
@@ -359,7 +359,7 @@ lakes = st_as_sf(read_csv(here(public_r, "major_lakes.csv"))[, c("name", "the_ge
   st_sf %>%
   mutate(EA = "Major Lakes of Malawi")
 
-ea = lhz %>%
+ea = lhz %>% #ea data used to find park boundaries and combine with lake data
   st_transform(3395) %>%  #transform to world mercator (jh: not sure if we need to transform to 3395 and back here?)
   summarize %>%  
   st_geometry %>%  #dissolve to one feature / one geometry
