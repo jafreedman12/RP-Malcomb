@@ -10,12 +10,12 @@ title: RP- Vulnerability modeling for sub-Saharan Africa
 Original study *by* Malcomb, D. W., E. A. Weaver, and A. R. Krakowka. 2014. Vulnerability modeling for sub-Saharan Africa: An operationalized approach in Malawi. *Applied Geography* 48:17–30. DOI:[10.1016/j.apgeog.2014.01.004](https://doi.org/10.1016/j.apgeog.2014.01.004)
 
 Replication Authors:
-Your Name, Joseph Holler, Kufre Udoh, Open Source GIScience students of fall 2019 and Spring 2021
+Jacob Freedman, Joseph Holler, Kufre Udoh, Open Source GIScience students of fall 2019 and Spring 2021
 
 Replication Materials Available at: [github repository name](github repository link)
 
-Created: `DD Month YYYY`
-Revised: `DD Month YYYY`
+Created: `12 April 2021`
+Revised: `27 April 2021`
 
 ## Abstract
 
@@ -59,7 +59,7 @@ The replication study will use R.
 8. Join ta_capacity to TA based on ta_id
 	(Multiply by 20--meaningless??) I have a question about this (so do I) ln.216
 9. Prepare breaks for mapping
-Class intervals based on capacity_2010 field 
+Class intervals based on capacity_2010 field
 Take the values and round them to 2 decimal places
 Put data in 4 classes based on break values
 10. Save the adaptive capacity scores
@@ -74,13 +74,13 @@ For Drought: use bilinear to avg continuous population exposure values
 For Flood: use nearest neighbor to preserve integer values
 13. CLIP the traditional authorities with the LHZs to cut out the lake
 14. RASTERIZE the ta_capacity data with pixel data corresponding to capacity_2010 field
-15. RASTER CALCULATOR: 
+15. RASTER CALCULATOR:
 Create a mask
 Reclassify the flood layer (quintiles, currently binary)
 Reclassify the drought values (quantile [from 0 - 1 in intervals of 0.2 =5])
 Add component rasters for final weighted score of drought + flood
 16. AGGREGATE: Create final vulnerability layer using envi. vulnerability score and ta_capacity I’m a little confused about how exactly this happens, but seems to be averaging the ta_final (which corresponds to vulnerability) and ta_2010 columns
-	
+
 Also, where does LHZ enter into this final value?
 
 
@@ -96,6 +96,23 @@ Figures to Include:
 - map of vulnerability in Malawi, analagous to figure 5 of the original study
 - map of difference between your figure 4 and the original figure 4
 - map of difference between your figure 5 and the original figure 5
+
+
+***Confusion Matrix***
+| 1  | 2  | 3  | 4  |
+| ------------- | ------------- |
+| 1  | 35  | 5  | 0  | 0  |
+| 2  | 27  | 26  | 0  | 0  |
+| 3  | 5  | 44  | 19  | 0  |
+| 4  | 0  | 7  | 28  | 4  |
+
+***Scatterplot of difference of results for Fig. 5***
+
+
+Spearman's Rho, Comparing figure 4: 0.7861
+Spearman's Rho, Comparing figure 5: 0.0603
+
+
 
 ## Unplanned Deviations from the Protocol
 

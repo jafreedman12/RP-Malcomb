@@ -90,7 +90,7 @@ dhs_downloads = get_datasets(
 )
 ```
 
-```{r 2010 adaptive capacity data}
+```{r r 2010 adaptive capacity data}
 ta = read_sf(here("data", "raw", "public","traditional_authorities", "MWI_adm2.shp")) %>%
   st_make_valid() 
 
@@ -228,8 +228,8 @@ ta = left_join(
   by = c("ID_2" = "ta_id")
 )
 
-# making capacity score resemble malcomb et al's work (20% weight)
-ta = mutate(ta, capacity_2010 = capacity_2010 * 20)
+# making capacity score resemble malcomb et al's work
+#ta = mutate(ta, capacity_2010 = capacity_2010 * 40)
 # 256 features 
 
 # preparing breaks for mapping using natural jenks method
@@ -253,6 +253,42 @@ save(
   file = here("data", "derived", "public", "adaptive_capacity.rData")
 )
 ```
+
+
+```{r LHZ: process livelihood zone data in R}
+#Read in LHZ Sensitivity Data
+lhz_scores = read_csv(here(private_r, "lhz_toJoinInQ.csv"))
+
+#Join livelihood sensitivity data to lhz zones
+# joining livelihood sensitivty and lhz zones, remove LHZ zones with no data with right join
+lhz_sensitivity <- lhz %>%
+  right_join(lhz_scores, by = "LZCODE")
+
+```
+
+```{r LHZ: calculate livehood sensitivty scores}
+
+lhz_sensitivity <- lhz_sensitivity %>% 
+  #rank everything as quintiles??
+  mutate(
+    ownCrops = percent_rank(pctOwnCrops) * 4 + 1,
+    wageIncome = percent_rank(pctIncWage) * 4 + 1,
+    cashcropIncome = percent_rank(desc(pctIncCashCrops)) * 4 + 1,
+    new_disasterCoping = percent_rank(desc(disasterCoping)) * 4 + 1,
+  ) %>%
+  # calculating capacity score based on table 2 in malcomb et al 
+  rowwise %>% 
+  mutate(
+    livelihoodSensitivity = sum(
+      ownCrops * 0.06,
+      wageIncome * 0.06,
+      cashcropIncome * 0.04,
+      new_disasterCoping * 0.04) 
+  ) %>%  
+  ungroup #%>% 
+  #mutate(livelihoodSensitivity_score = livelihoodSensitivity *20)
+```
+
 
 ```{r reading rasters into r}
 # UNEP layers
@@ -296,6 +332,7 @@ fl = blank
 fl[[1]][] = nmrc
 ```
 
+
 ```{r rasterizing geometries}
 # clipping traditional authorities with livelihood zones in order to remove lake
 #st_clip: clip raster to polygon extent. Building the st_clip function
@@ -310,7 +347,8 @@ ta_2010 = st_clip(st_transform(filter(ta, is.na(capacity_2010) == F), 3395), st_
 
 # RASTERIZE: making capacity rasters
 ta_capacity = st_rasterize(ta_2010[, 'capacity_2010'], blank)
-#lhz_capacity = st_rasterize(lhz[,'capacity'], blank) 
+lhz_sensitivity_raster = st_rasterize(lhz_sensitivity[,'livelihoodSensitivity'], blank) 
+ta_capacity_2 <- ta_capacity + lhz_sensitivity_raster
 ```
 
 ```{r function to calculate vulnerability}
@@ -341,12 +379,12 @@ vulnerability = function(geo) {
     ) %>% select(recoded) * 4 #the multiplying by 4 here normalizes everything to 20 (like in the Malcomb review)
   
   # final output (adding component rasters)
-  final = (40 - geo) * 0.40 + drought * 0.20 + flood * 0.20
+  final = (geo) * 0.60 + drought * 0.20 + flood * 0.20
 }
 ```
 
 ```{r creating final vulnerability layers}
-ta_final = vulnerability(ta_capacity)
+ta_final = vulnerability(ta_capacity_2)
 
 ta_2010$vuln = aggregate(ta_final,ta_2010,mean)$capacity_2010
 ```
@@ -384,7 +422,7 @@ map_2010 = ggplot() +
           color = NA) +
   geom_sf(
     data = ta_2010,
-    aes(fill = capacity_2010_brks),
+    aes(fill = capacity_2010_brks))\,
     color = "white",
     lwd = .2
   ) + scale_fill_manual(
@@ -392,10 +430,10 @@ map_2010 = ggplot() +
       "Missing Data" = "#FFC389",
       "National Parks and Reserves" = "#D9EABB",
       "Major Lakes of Malawi" = "lightblue",
-      "13.95 - 15.84" = "#333333",
-      "15.84 - 17.13" = "#666666",
-      "17.13 - 18.89" = "#999999",
-      "18.89 - 21.36" = "#CCCCCC"
+      "0.7 - 0.79" = "#333333",
+      "0.79 - 0.86"  = "#666666",
+      "0.86 - 0.94" = "#999999",
+      "0.94 - 1.07" = "#CCCCCC"
     )
   ) +
   scale_x_continuous(breaks = c(33,34,35,36)) +
@@ -424,11 +462,11 @@ vuln_map = ggplot() +
   scale_fill_gradient(
     low = "#FFFF75",
     high = "#CF4611",
-    breaks = c(9.968335,  17.99652),
+    breaks = c(1.508731, 8.162132),
     labels = c("Lower Vulnerability", "Higher Vulnerability"),
     na.value = "transparent",
     guide = "colourbar",
-    limits = c(9.968335,  17.99652)
+    limits = c(1.508731, 8.162132)
   ) +
   scale_x_continuous(breaks = c(33,34,35,36)) +
   labs(title = "Malawi Vulnerability to Climate Change") +
@@ -471,3 +509,149 @@ write_sf(ta_2010, results, "ta_2010")
 
 write_sf(lhz, results, "lhz")
 ```
+
+```{r comparing discrete choropleth maps}
+or_fig4 = # load original figure 4 data
+  read_sf(here("data", "derived", "public", "georeferencing.gpkg"), 
+          layer="ta_resilience") %>% 
+  # load ta_resilience layer from georeferencing geopackage
+  st_drop_geometry() %>%
+  # remove the geometry data because two geometries cannot be joined
+  select(c(ID_2,resilience)) %>%  
+  # select only the ID_2 and resilience columns
+  na.omit()
+  # remove records with null values
+
+rp_fig4 = ta_2010 %>% # prepare our reproduction of figure 4 data
+  select(c(ID_2,capacity_2010)) %>%  
+  # select only the ID_2 and resilience columns
+  # note: geometry columns are 'sticky' -- only way to remove is st_drop_geometry()
+  na.omit()  %>%
+  # remove records with null values
+  mutate(rp_res = case_when(
+  capacity_2010 <= ta_brks[2] ~ 1,
+  capacity_2010 <= ta_brks[3] ~ 2,
+  capacity_2010 <= ta_brks[4] ~ 3,
+  capacity_2010 >  ta_brks[4] ~ 4
+))
+# code the capacity scores as integers, as we see them classified on the map. 
+#ta_brks was the result of a Jenks classification, as noted on Malcomb et al's maps
+
+fig4compare = inner_join(rp_fig4,or_fig4,by="ID_2") %>%  
+  #inner join on field ID_2 keeps only matching records
+  filter(rp_res>0 & rp_res<5 & resilience > 0 & resilience < 5)
+  # keep only records with valid resilience scores
+
+table(fig4compare$resilience,fig4compare$rp_res)
+# crosstabulation with frequencies
+
+cor.test(fig4compare$resilience,fig4compare$rp_res,method="spearman")
+# Spearman's Rho correlation test
+
+fig4compare = mutate(fig4compare, difference = rp_res - resilience) 
+# Calculate difference between the maps so that you can create a difference map
+
+diffcompare = ggplot() +
+  geom_sf(data = ea,
+          aes(fill = EA),
+          color = NA) +
+  geom_sf(data = fig4compare,
+    aes(fill = factor(difference)),
+    color = "white",
+    lwd = .2) + 
+  scale_fill_manual(
+    values = list(
+      "Missing Data" = "#FFC389",
+      "National Parks and Reserves" = "#D9EABB",
+      "Major Lakes of Malawi" = "lightblue",
+      "-2" = "#333333",
+      "-1"  = "#666666",
+      "0" = "white",
+      "1" = "#CCCCCC"
+    )
+  ) +
+  scale_x_discrete(breaks = c(33,34,35,36)) +
+  labs(title = "Difference in adaptive capacity between Malcomb et. al (2014) and Replication") +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank())
+
+diffcompare
+```
+
+```{r comparing continuous raster maps}
+orfig5vect = 
+  read_sf(here("data", "derived", "public", "georeferencing.gpkg"), 
+          layer="vulnerability_grid")
+# load original figure 5 data
+
+orfig5rast = st_rasterize(orfig5vect["bmean"], template=ta_final)
+# convert mean of blue values into a raster using ta_final as a reference for raster
+# extent, cell size, CRS, etc.
+
+orfig5rast = orfig5rast %>% 
+  mutate(or = 1-
+           (bmean - min(orfig5rast[[1]], na.rm= TRUE)) /
+           (max(orfig5rast[[1]], na.rm= TRUE) -
+            min(orfig5rast[[1]], na.rm= TRUE)
+        )
+)  # or is Re-scaled from 0 to 1 with (value - min)/(max - min)
+# it is also inverted, because higher blue values are less red
+
+
+ta_final = ta_final %>% 
+  mutate(rp =
+           (capacity_2010 - min(ta_final[[1]], na.rm= TRUE)) /
+           (max(ta_final[[1]], na.rm= TRUE) -
+            min(ta_final[[1]], na.rm= TRUE)
+        )
+)  # rp is Re-scaled from 0 to 1 with (value - min)/(max - min)
+
+fig5comp = c( select(ta_final,"rp"), select(orfig5rast,"or"))
+# combine the original (or) fig 5 and reproduced (rp) fig 5
+
+fig5comp = fig5comp %>% mutate( diff = rp - or )
+# calculate difference between the original and reproduction,
+# for purposes of mapping
+
+fig5comppts = st_as_sf(fig5comp)
+# convert raster to vector points to simplify plotting and correlation testing
+
+plot(fig5comppts$or, fig5comppts$rp, xlab="Original Study", ylab="Reproduction")
+# create scatterplot of original results and reproduction results
+
+cor.test(fig5comppts$or, fig5comppts$rp, method="spearman")
+# Spearman's Rho correlation test
+
+diffrastermap = ggplot() +
+  geom_sf(data = ea,
+          fill = clrs,
+          color = NA) +
+  geom_stars(data = fig5comp["diff"]) +
+  scale_fill_gradient2(
+    low = "#FFFF75",
+    mid = "black",
+    high = "#CF4611",
+    breaks = c(-0.98, 0, 0.736),
+    labels = c("Diverging 1", "zero", "Diverging 2"),
+    na.value = "transparent",
+    guide = "colourbar",
+    limits = c(-0.98, 0, 0.736)
+  ) +
+  scale_x_continuous(breaks = c(33,34,35,36)) +
+  labs(title = "Malawi Vulnerability to Climate Change") +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank()
+  )
+
+diffrastermap
+
+# Hint for mapping raster results: refer to the diff raster attribute
+# in the fig5comp stars object like this: fig5comp["diff"]
+```
+
