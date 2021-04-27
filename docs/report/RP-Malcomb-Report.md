@@ -44,6 +44,7 @@ The DHS website acknowledges the high potential for inconsistent or incomplete d
 In this analysis, we use the variables listed in **Table 1** to determine the average adaptive capacity of each TA area. Data transformations are outlined below.
 
 ***Table 1: Variables from DHS data***
+
 | Variable Code  | Definition  |
 | ------------- | ------------- |
 | HHID  | "Case Identification"  |
@@ -72,6 +73,7 @@ The Livelihood zone data is created by aggregating general regions where similar
 The LHZ data variables are outlined in **Table 2**. The four categories used to determine livelihood sensitivity were ranked from 1-5 based on percent rank values and then weighted using values taken from Malcomb et al. (2014).
 
 ***Table 2: Constructing livelihood sensitivity categories***
+
 | Livelihood Sensitivity Category (LSC)  | Percent Contributing  | How LSC was constructed  |
 | ------------- | ------------- | ------------- |
 | Percent of food from own farm  |  6%  | Sources of food: crops + livestock  |
@@ -147,8 +149,8 @@ The code used for this reproduction can be found [here](https://github.com/jafre
 ![Difference between Fig. 4 by Malcomb et al. (2014) and by Reproduction](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/difference_ac_2010.png)
 
 ***Confusion Matrix***
+
 | 1  | 2  | 3  | 4  |
-| ------------- | ------------- |
 | 1  | 35  | 5  | 0  | 0  |
 | 2  | 27  | 26  | 0  | 0  |
 | 3  | 5  | 44  | 19  | 0  |
