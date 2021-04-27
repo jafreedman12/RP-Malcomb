@@ -150,8 +150,8 @@ The code used for this reproduction can be found [here](https://github.com/jafre
 
 ***Confusion Matrix***
 
-| 1  | 2  | 3  | 4  |
-| --- | --- | --- | --- |
+|  | 1  | 2  | 3  | 4  |
+| --- | --- | --- | --- | --- |
 | 1  | 35  | 5  | 0  | 0  |
 | 2  | 27  | 26  | 0  | 0  |
 | 3  | 5  | 44  | 19  | 0  |
