@@ -4,15 +4,16 @@ title: RP- Vulnerability modeling for sub-Saharan Africa
 ---
 
 
-**Replication of**
+**Reproduction of**
 # Vulnerability modeling for sub-Saharan Africa
 
 Original study *by* Malcomb, D. W., E. A. Weaver, and A. R. Krakowka. 2014. Vulnerability modeling for sub-Saharan Africa: An operationalized approach in Malawi. *Applied Geography* 48:17–30. DOI:[10.1016/j.apgeog.2014.01.004](https://doi.org/10.1016/j.apgeog.2014.01.004)
 
-Replication Authors:
+Reproduction Authors:
 Jacob Freedman, Joseph Holler, Kufre Udoh, Open Source GIScience students of fall 2019 and Spring 2021
+Co-created with Alitzel Villanueva, Arielle Landau, Drew An-Pham, Emma Clinton, Maja Cannavo, and Nick Nonnenmacher
 
-Replication Materials Available at: [RP-Malcomb](https://github.com/jafreedman12/RP-Malcomb)
+Reproduction Materials Available at: [RP-Malcomb](https://github.com/jafreedman12/RP-Malcomb)
 
 Created: `12 April 2021`
 Revised: `27 April 2021`
@@ -30,12 +31,6 @@ The original study was published without data or code, but has detailed narrativ
 
 ## Data Description and Variables
 This component was written collaboratively with Alitzel Villanueva, Maja Cannavo, Emma Clinton, Drew An-Pham, and Nick Nonnenmacher, all students in GEOG0323.
-
-Outline the data used in the study, including:
-
-- sources of each data layer and
-- the variable(s) used from each data source
-- transformations applied to the variables (e.g. rescaling variables, calculating derived variables, aggregating to different geographic units, etc.)
 
 ### Assets and Access:
 Demographic and Health Survey data are a product of the United States Agency for International Development (USAID). Variables contained in this dataset are used to represent adaptive capacity (access + assets) in the Malcomb et al.’s (2014) study. These data come from survey questionnaires with large sample sizes.
@@ -70,7 +65,6 @@ In this analysis, we use the variables listed in **Table 1** to determine the av
 |HV204  |“Time to get to Water Source”  |
 
 
-
 ### Livelihood Zones:
 
 The Livelihood zone data is created by aggregating general regions where similar crops are grown and similar ecological patterns exist. This data exists originally at the household level and was aggregated into Livelihood Zones. To construct the aggregation used for “Livelihood Sensitivity” in this analysis, we use these household points from the FEWSnet data that had previously been aggregated into livelihood zones. The four Livelihood Sensitivity categories are 1) Percent of food from own farm (6%); 2) Percent of income from wage labor (6%); 3) Percent of income from cash crops (4%); and 4) Disaster coping strategy (4%). In the original R script, household data from the DHS survey was used as a proxy for the specific data points in the livelihood sensitivity analysis (transformation: Join with DHS clusters to apply LHZ FNID variables). With this additional FEWSnet data at the household level, we can construct these four livelihood sensitivity categories using existing variables (Table 1).
@@ -90,14 +84,12 @@ The LHZ data variables are outlined in **Table 2**. The four categories used to 
 This dataset uses the Standardized Precipitation Index to measure annual drought exposure across the globe. The Standardized Precipitation Index draws on data from a “global monthly gridded precipitation dataset” from the University of East Anglia’s Climatic Research Unit, and was modeled in GIS using methodology from Brad Lyon at Columbia University. The dataset draws on 2010 population information from the LandScanTM Global Population Database at the Oak Ridge National Laboratory.  Drought exposure is reported as the expected average annual (2010) population exposed. The data were compiled by UNEP/GRID-Europe for the Global Assessment Report on Risk Reduction (GAR). The data use the WGS 1984 datum, span the years 1980-2001, and are reported in raster format with spatial resolution 1/24 degree x 1/24 degree.
 
 
-
 ### Analytical Specification
-
 The original study was conducted using ArcGIS and STATA, but does not state which versions of these software were used.
-The replication study will use R.
+The reproduction study will use R.
+
 
 ## Materials and Procedure
-
 ### ADAPTIVE CAPACITY WORKFLOW [ASSETS & ACCESS]
 1. Bring in DHS Data [Households Level] (vector)
 2. Bring in TA (Traditional Authority boundaries) and LHZ (livelihood zones) data
@@ -137,23 +129,16 @@ Add component rasters for final weighted score of drought + flood
 Also, where does LHZ enter into this final value?
 
 
-## Replication Results
-The code used for this replication can be found [here](https://github.com/jafreedman12/RP-Malcomb/blob/main/procedure/code/RP-Malcomb-jf.Rmd).
+## Reproduction Results
+The code used for this reproduction can be found [here](https://github.com/jafreedman12/RP-Malcomb/blob/main/procedure/code/RP-Malcomb-jf.Rmd). This code was originally written by Kufre Udoh and Prof. Joseph Holler, and was expanded upon by our group, particularly to include data from the livelihood sensitivity zones in the final outputs. This "co-production" of knowledge by current students, prior students/research assistants, and professors reflects the beneficial nature of participatory GIS in improving validations of existing research. Bringing together people with multiple perspectives to investigate code can improve societal benefits of the work, reducing the chance of reproducing harms and exclusionary biases that could be present in existing analyses. By doing this investigatory process three times over (the class was divided into three groups for this reproduction), we further expand our capacity towards conducting more robust reproductions and analyses.  
 
-
-For each output from the original study (mainly figure 4 and figure 5), present separately the results of the replication attempt.
-
-2.	State whether the original study was or was not supported by the replication
-3.	State whether any hypothesis linked to a planned deviation from the original study was supported. Provide key statistics and related reasoning.
-
-Figures to Include:
 
 ### Figure 4: Adaptive Capacity
 ***map of resilience by traditional authority in 2010, analagous to figure 4 of the original study***
-![Replication of Fig. 4: Adaptive capacity scores](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/ac_2010.png)
+![Reproduction of Fig. 4: Adaptive capacity scores](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/ac_2010.png)
 
 ***map of difference between your figure 4 and the original figure 4***
-![Difference between Fig. 4 by Malcomb et al. (2014) and by replication](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/difference_ac_2010.png)
+![Difference between Fig. 4 by Malcomb et al. (2014) and by Reproduction](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/difference_ac_2010.png)
 
 ***Confusion Matrix***
 | 1  | 2  | 3  | 4  |
@@ -166,48 +151,137 @@ Figures to Include:
 ***Spearman's Rho coefficients:***
 Spearman's Rho, Comparing figure 4: 0.7861
 
+The calculation and visualization of the Adaptive Capacity was statistically by the reproduction, with a Spearman's Rho value of 0.7861. Nevertheless, when looking at the confusion matrix, we see that the original study found a generally higher resilience/adaptive score than our reproduction (bottom-left skew in confusion matrix). This discrepancy is fairly low, with the vast majority of categories that were wrong as only one category off in either direction.
 
+In the original study, the adaptive capacity scores range from 11 - 25, whereas those in the replication go from 0.7-1.07. In the given code written by Kufre Udoh and Joseph Holler, these values were multiplied by 20 to give a closer value to those in the original study. I removed this multiplication by 20 from our reproduction, as I believe that our code should attempt to independently reproduce the results, not match our approximate findings to the original through arbitrary data distortions. As seen below, I ignore this 20x distortion (using a `#` symbol) while still preparing the data for visualization breaks as created in the original study.
+
+```{r joining 2010 capacity to ta and creating breaks for visualization}
+# join mean capacity to traditional authorities
+ta = left_join(
+  ta,
+  select(ta_capacity_2010, ta_id, capacity_2010 = capacity_avg),
+  by = c("ID_2" = "ta_id")
+)
+
+# making capacity score resemble malcomb et al's work
+#ta = mutate(ta, capacity_2010 = capacity_2010 * 20)
+# 256 features
+
+# preparing breaks for mapping using natural jenks method
+ta_brks = filter(ta, !is.na(capacity_2010)) %>% {classIntervals(.$capacity_2010, 4, style = "jenks")$brks}
+
+#lapply: apply a function over a list or a vector
+#make four classes of jenks for mapping/visualizing the data. Assign data to classes
+ta_int = lapply(1:4, function(x) paste0(round(ta_brks[x],2)," - ", round(ta_brks[x +1],2))) %>% unlist()
+
+ta = mutate(ta, capacity_2010_brks = case_when(
+  capacity_2010 <= ta_brks[2] ~ ta_int[1],
+  capacity_2010 <= ta_brks[3] ~ ta_int[2],
+  capacity_2010 <= ta_brks[4] ~ ta_int[3],
+  capacity_2010 >  ta_brks[4] ~ ta_int[4]
+))
+```
 
 ### Figure 5: Vulnerability to Climate Change
 ***map of vulnerability in Malawi, analogous to figure 5 of the original study***
-![Replication of Fig. 5: Vulnerability to climate disasters](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/vulnerability.png)
+![reproduction of Fig. 5: Vulnerability to climate disasters](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/vulnerability.png)
 
 ***map of difference between your figure 5 and the original figure 5***
-![Difference between Fig. 5 by Malcomb et al. (2014) and by replication](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/difference_vulnerability.png)
-
+![Difference between Fig. 5 by Malcomb et al. (2014) and by reproduction](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/difference_vulnerability.png)
 
 ***Scatterplot of difference of results for Fig. 5***
 ![Scatterplot of difference of results from Figure 5](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/figures/fig5_diff_scatterplot.png)
 
 ***Spearman's Rho coefficients:***
-Spearman's Rho, Comparing figure 5: 0.0603
+Spearman's Rho, Comparing figure 5: 0.2244
 
+Unlike the comparisons of the adaptive capacity maps, the vulnerability maps created in our reproduction align with those from Malcomb et al. (2014) to a much lesser degree. With a Spearman's Rho of 0.224, there is little alignment between the two analyses. While the map of difference between my Figure 5 and the original Figure 5 shows some general alignment in vulnerability scores in southern and central Malawi, there is little alignment across other parts of the country.
+
+I adjusted the function used to calculate vulnerability, especially the equation used in the final output. While the original study said that the vulnerability equation was `Adaptive Capacity + Livelihood Sensitivity - Physical Exposure`, the original equation provided in the reproduction code was `final = (40 - geo) * 0.40 + drought * 0.20 + flood * 0.20`, this does not account for the livelihood zones, nor the direct subtraction of physical exposure from the resilience scores. I attempted to adjust the resilience calculation to `final = ((geo) * 0.6)) - (drought * 0.20 + flood * 0.20)`, but this yielded an even lower Spearman's Rho coefficient, around 0.06. In the end, I struck a balance between aggregating in the livelihood zone scores and normalizing all the data to the same scale. The final code for calculating the vulnerability score can be seen below.
+
+```{r function to calculate vulnerability}
+  # final output (adding component rasters)
+  final = ((60-geo) * 0.6) + (drought * 0.2 + flood * 0.2)
+}
+```
 
 
 ## Unplanned Deviations from the Protocol
+Though we have listed our original workflow prior to analysis above, this was not the exact workflow we used in the final analysis. Our [R-markdown code](https://github.com/jafreedman12/RP-Malcomb/blob/main/procedure/code/RP-Malcomb-jf.Rmd) for Rstudio depicts the final workflow in code format, and is verbally written out below. Our original workflow plan was fairly similar to the plan we ended up using, albeit with far more specificity in the specific variables and calculations used. We were able to include the livelihood zone data after accessing the data and better understanding the shape of the data. As a group, we decided which variables would be used to create the livelihood zones (Table 2) based on references centered around page 21 in Malcomb et al. (2014). The original report is unclear in which variables were used to calculate the livelihood zone scores, along with if these data were from only the "poor" category or also included those in the "middle-class" and "rich" calculations of livelihood sensitivity. Aside from uncertainty in variables selected in the DHS and LHZ data, factors of normalization (derived from Table 2 in Malcomb et al. (2014) (pg. 23)) used throughout our code replication
 
-Summarize changes and uncertainties between
-- your interpretation and plan for the workflow based on reading the paper
-- your final workflow after accessing the data and code and completing the code
+
+***Table 2 from Malcomb et al.(2014) -- Calculating Household Resilience Score***
+![Household Resilience Score table]()
+
+
+***Process Adaptive Capacity***
+1. Bring in DHS Data [Households Level] (vector)
+2. Bring in TA (Traditional Authority boundaries) and LHZ (livelihood zones) data
+3. Get rid of unsuitable households (eliminate NULL and/or missing values)
+3. Join TA and LHZ ID data to the DHS clusters
+4. Pre-process the livestock data, Filter for NA livestock data, Update livestock data (summing different kinds)
+5. FIELD CALCULATOR: Normalize each indicator variable and rescale from 1-5 (real numbers) based on percent rank
+6. FIELD CALCULATOR / ADD FIELD: Apply weights to normalized indicator variables to get scores for each category (assets, access)
+7. SUMMARIZE/AGGREGATE: find the stats of the capacity of each TA (min, max, mean, sd)
+8. Join ta_capacity to TA based on ta_id, (Multiply by 20--meaningless??) I have a question about this (so do I) ln.216
+9. Prepare breaks for mapping --> Class intervals based on capacity_2010 field --> Take the values and round them to 2 decimal places --> Put data in 4 classes based on break values
+10. Save the adaptive capacity scores
+
+***Process Livelihood Sensitivity***
+1. Load in LHZ csv into R
+2. Join LHZ sensitivity data into R code
+3. Create livelihood sensitivity score data based on breakdown provided in report (Table 2)
+
+***Process Physical Exposure***
+1. Load in UNEP rasterSet CRS for drought
+2. Set CRS for flood
+3. Clean and reproject rasters
+4. Create a bounding box at extent of Malawi, Add geometry info and precision (st_as_sfc)
+5. RASTERIZE the adaptive capacity data with pixel data corresponding to capacity_2010 field
+6. RASTERIZE the livelihood sensitivity score with pixel data corresponding to capacity_2010 field
+7. SUM RASTERS: Combine adaptive capacity and livelihood sensitivity rasters
+8. For Drought: use bilinear to average continuous population exposure values
+9. For Flood: use nearest neighbor to preserve integer values
+10. RASTER CALCULATOR: a) Create a mask; b) Reclassify the flood layer (quintiles, currently binary); c) Reclassify the drought values (quantile [from 0 - 1 in intervals of 0.2 =5]); d) Add component rasters for final weighted score of drought + flood; e) Combine with adaptive capacity and livelihood zone data
+11. CLIP the traditional authorities with the LHZs to cut out the lake
+12. AGGREGATE: Create final vulnerability layer using environmental vulnerability score and ta_capacity
+
 
 ## Discussion
+Provide a summary and interpretation of the key findings of the reproduction *vis-a-vis* the original study results. If the attempt was a failure, discuss possible causes of the failure.
 
-Provide a summary and interpretation of the key findings of the replication *vis-a-vis* the original study results. If the attempt was a failure, discuss possible causes of the failure. In this replication, any failure is probably due to practical causes, which may include:
+In this reproduction, any failure is probably due to practical causes, which may include:
 - lack of data
 - lack of code
 - lack of details in the original analysis
 - uncertainties due to manner in which data has been used
 
+There is lots of uncertainty in the original Malcomb et al. (2014) paper, with concerns about how data is aggregated, the scale to which it is aggregated, how the data is proprotionally normalized, and statistical distribution of vulnerability scores. This reproduction helps to tease out which variables impact the study by observing where decisions influence the output maps. In this light, I ask *How much does each subjective decision I make in my work impact the result?*
+
+
+Can conducting reproductions (using the same data and techniques to attempt same outputs) help with vulnerability model uncertainty?
+
+How much is the study dependent on specific community conditions?
+
+
+This reproduction could be improved by creating functions and for-loops to explore all reasonable scenarios where there is uncertainty or extensive opportunities for human bias. Some examples of where these functions would be useful are selecting which sources of income should be counted as assets and determining which scales of aggregation (TA vs. district) should be allowed. Using a "Monte Carlo" simulation
+
+There is a  major amount of uncertainty as to how the final outputs are normalized to one another. While the Malcomb et al. (2014) report provides a breakdown of proportionality, it does not quantify any of these values nor the scale at which they should be processed.
+
+It is innapropriate to "nudge" our results to align with the results from Malcomb et al. (2014). The lack of transparency with
+
 ## Conclusion
+
+This analysis illuminates the difficulties of reproducing existing scientific work and the value of transparent code in conducting more robust reserach.
 
 Restate the key findings and discuss their broader societal implications or contributions to theory.
 Do the research findings suggest a need for any future research?
 
 ## References
 
-Malcomb, D. W., E. A. Weaver, and A. R. Krakowka. 2014. Vulnerability modeling for sub-Saharan Africa: An operationalized approach in Malawi. Applied Geography 48:17–30. DOI:10.1016/j.apgeog.2014.01.004
+Malcomb, D. W., E. A. Weaver, and A. R. Krakowka. 2014. Vulnerability modeling for sub-Saharan Africa: An operationalized approach in Malawi. *Applied Geography* 48:17–30. DOI:[10.1016/j.apgeog.2014.01.004](https://doi.org/10.1016/j.apgeog.2014.01.004)
 
-Tate, E. 2013. Uncertainty Analysis for a Social Vulnerability Index. Annals of the Association of American Geographers 103 (3):526–543. doi:10.1080/00045608.2012.700616.
+Tate, E. 2013. Uncertainty Analysis for a Social Vulnerability Index. *Annals of the Association of American Geographers* 103 (3):526–543. [doi:10.1080/00045608.2012.700616](http://www.tandfonline.com/doi/full/10.1080/00045608.2012.700616).
 
 
 ####  Report Template References & License

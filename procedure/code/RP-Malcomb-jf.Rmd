@@ -10,7 +10,7 @@ output: html_document
 
 ### Authors: Jacob Freedman, Alitzel Villanueva, Maja Cannavo, Emma Clinton, Nick Nonnenmacher, Drew An-Pham
 
-### Original replication by Kufre Udoh, Joseph Holler, and Middlebury College Spring 2019 Geography 323 class
+### Original reproduction by Kufre Udoh, Joseph Holler, and Middlebury College Spring 2019 Geography 323 class
 
 ### [https://gis4dev.github.io/](https://gis4dev.github.io/)
 
@@ -379,8 +379,10 @@ vulnerability = function(geo) {
     ) %>% select(recoded) * 4 #the multiplying by 4 here normalizes everything to 20 (like in the Malcomb review)
   
   # final output (adding component rasters)
-  final = (geo) * 0.60 + drought * 0.20 + flood * 0.20
+  final = ((60-geo) * 0.6 + (drought*0.2 + flood * 0.2)) #Should this be subtraction?? Normalize everything to appropriate values
 }
+
+
 ```
 
 ```{r creating final vulnerability layers}
@@ -462,11 +464,11 @@ vuln_map = ggplot() +
   scale_fill_gradient(
     low = "#FFFF75",
     high = "#CF4611",
-    breaks = c(1.508731, 8.162132), #c(35.81, 42.42), 
+    breaks = c(35.81, 42.41), # c(1.508731, 8.162132), 
     labels = c("Lower Vulnerability", "Higher Vulnerability"),
     na.value = "transparent",
     guide = "colourbar",
-    limits = c(1.508731, 8.162132) #c(35.81, 42.42) 
+    limits = c(35.81, 42.41) #c(1.508731, 8.162132)  
   ) +
   scale_x_continuous(breaks = c(33,34,35,36)) +
   labs(title = "Malawi Vulnerability to Climate Change") +
@@ -572,7 +574,7 @@ diffadaptive = ggplot() +
     )
   ) +
   scale_x_discrete(breaks = c(33,34,35,36)) +
-  labs(title = "Difference in adaptive capacity between Malcomb et. al (2014) and Reproduction") +
+  labs(title = "Difference in adaptive capacity between Malcomb et. al (2014) and Replicatio") +
   theme_minimal() +
   theme(
     legend.title = element_blank(),
