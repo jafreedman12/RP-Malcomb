@@ -81,16 +81,20 @@ The LHZ data variables are outlined in **Table 2**. The four categories used to 
 
 
 ### Physical Exposure: Physical exposition to droughts events 1980-2001
+
 This dataset uses the Standardized Precipitation Index to measure annual drought exposure across the globe. The Standardized Precipitation Index draws on data from a “global monthly gridded precipitation dataset” from the University of East Anglia’s Climatic Research Unit, and was modeled in GIS using methodology from Brad Lyon at Columbia University. The dataset draws on 2010 population information from the LandScanTM Global Population Database at the Oak Ridge National Laboratory.  Drought exposure is reported as the expected average annual (2010) population exposed. The data were compiled by UNEP/GRID-Europe for the Global Assessment Report on Risk Reduction (GAR). The data use the WGS 1984 datum, span the years 1980-2001, and are reported in raster format with spatial resolution 1/24 degree x 1/24 degree.
 
 
 ### Analytical Specification
+
 The original study was conducted using ArcGIS and STATA, but does not state which versions of these software were used.
 The reproduction study will use R.
 
 
 ## Materials and Procedure
+
 ### ADAPTIVE CAPACITY WORKFLOW [ASSETS & ACCESS]
+
 1. Bring in DHS Data [Households Level] (vector)
 2. Bring in TA (Traditional Authority boundaries) and LHZ (livelihood zones) data
 3. Get rid of unsuitable households (eliminate NULL and/or missing values)
@@ -130,11 +134,13 @@ Also, where does LHZ enter into this final value?
 
 
 ## Reproduction Results
+
 The code used for this reproduction can be found [here](https://github.com/jafreedman12/RP-Malcomb/blob/main/procedure/code/RP-Malcomb-jf.Rmd). This code was originally written by Kufre Udoh and Prof. Joseph Holler, and was expanded upon by our group, particularly to include data from the livelihood sensitivity zones in the final outputs. This "co-production" of knowledge by current students, prior students/research assistants, and professors reflects the beneficial nature of participatory GIS in improving validations of existing research. Bringing together people with multiple perspectives to investigate code can improve societal benefits of the work, reducing the chance of reproducing harms and exclusionary biases that could be present in existing analyses. By doing this investigatory process three times over (the class was divided into three groups for this reproduction), we further expand our capacity towards conducting more robust reproductions and analyses.  
 
 
 ### Figure 4: Adaptive Capacity
-***map of resilience by traditional authority in 2010, analagous to figure 4 of the original study***
+
+***map of adaptive capacity by traditional authority in 2010, analagous to figure 4 of the original study***
 ![Reproduction of Fig. 4: Adaptive capacity scores](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/ac_2010.png)
 
 ***map of difference between your figure 4 and the original figure 4***
@@ -183,6 +189,7 @@ ta = mutate(ta, capacity_2010_brks = case_when(
 ```
 
 ### Figure 5: Vulnerability to Climate Change
+
 ***map of vulnerability in Malawi, analogous to figure 5 of the original study***
 ![reproduction of Fig. 5: Vulnerability to climate disasters](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/maps/vulnerability.png)
 
@@ -207,12 +214,12 @@ I adjusted the function used to calculate vulnerability, especially the equation
 
 
 ## Unplanned Deviations from the Protocol
-Though we have listed our original workflow prior to analysis above, this was not the exact workflow we used in the final analysis. Our [R-markdown code](https://github.com/jafreedman12/RP-Malcomb/blob/main/procedure/code/RP-Malcomb-jf.Rmd) for Rstudio depicts the final workflow in code format, and is verbally written out below. Our original workflow plan was fairly similar to the plan we ended up using, albeit with far more specificity in the specific variables and calculations used. We were able to include the livelihood zone data after accessing the data and better understanding the shape of the data. As a group, we decided which variables would be used to create the livelihood zones (Table 2) based on references centered around page 21 in Malcomb et al. (2014). The original report is unclear in which variables were used to calculate the livelihood zone scores, along with if these data were from only the "poor" category or also included those in the "middle-class" and "rich" calculations of livelihood sensitivity. Aside from uncertainty in variables selected in the DHS and LHZ data, factors of normalization (derived from Table 2 in Malcomb et al. (2014) (pg. 23)) used throughout our code replication
+
+Though we have listed our original workflow prior to analysis above, this was not the exact workflow we used in the final analysis. Our [R-markdown code](https://github.com/jafreedman12/RP-Malcomb/blob/main/procedure/code/RP-Malcomb-jf.Rmd) for Rstudio depicts the final workflow in code format, and is verbally written out below. Our original workflow plan was fairly similar to the plan we ended up using, albeit with far more specificity in the specific variables and calculations used. We were able to include the livelihood zone data after accessing the data and better understanding the shape of the data. As a group, we decided which variables would be used to create the livelihood zones (Table 2) based on references centered around page 21 in Malcomb et al. (2014). The original report is unclear in which variables were used to calculate the livelihood zone scores, along with if these data were from only the "poor" category or also included those in the "middle-class" and "rich" calculations of livelihood sensitivity. Aside from uncertainty in variables selected in the DHS and LHZ data, factors of normalization (as derived from Table 2 in Malcomb et al. (2014) (pg. 23)) used throughout our code replication do not yield the same results as the Malcomb report. As noted earlier, the adaptive capacity scores in our maps and those from Malcomb et al. (2014) do not align without an arbitrary multiplier of 20 prior to displaying in a map. Much of my interest in this report was focused on determining the how to align our results with those in the Malcomb report through normalization factors, but with no major breakthroughs. Additionally, Malcomb et al. (2014) claim to use quintiles for their categorization, but list these quintiles as ranging from 0-5 (representing six categories). This uncertainty is a area for future analysis, illustrating the importance of transparent code by researchers who are working to create *replicable* tools for assessing vulnerability.
 
 
 ***Table 2 from Malcomb et al.(2014) -- Calculating Household Resilience Score***
-![Household Resilience Score table]()
-
+![Household Resilience Score table](https://github.com/jafreedman12/RP-Malcomb/blob/main/results/figures/malcomb_hh_resilience_score.png)
 
 ***Process Adaptive Capacity***
 1. Bring in DHS Data [Households Level] (vector)
@@ -248,40 +255,38 @@ Though we have listed our original workflow prior to analysis above, this was no
 
 
 ## Discussion
-Provide a summary and interpretation of the key findings of the reproduction *vis-a-vis* the original study results. If the attempt was a failure, discuss possible causes of the failure.
 
-In this reproduction, any failure is probably due to practical causes, which may include:
-- lack of data
-- lack of code
-- lack of details in the original analysis
-- uncertainties due to manner in which data has been used
+Based on the research by Eric Tate (2013) around vulnerability modelling and uncertainty, we can better assess the framweorks used by Malcomb et al. (2014) to model vulnerability in Malawi. Malcomb et al. (2014) use a hierarchical model structure to index and combine variables for vulnerability mapping. This hierarchy was created through a deductive, normative, and practical approach, where researchers consulted with experts (who had often collected the existing data themselves), determined how community values are represented in existing variables, and constructed their analysis based on the data that was readily available. The analysis was conducted at the Traditional Authority and Livelihood Zone scale, and later rasterized to match the format of existing drought and and flood data in Malawi. Data was normalized to 0-5 quintiles and was weighted based on the normative judgements of research about what attributes contribute the most about vulnerability. Some variables, such as owning a phone or T.V., might signal societal trends and be used as proxies for wealth in adaptive capacity scores. Final outputs were constructed through aggregation to Traditional Authority boundaries and additive raster algebra. Uncertainty in the data and results was ignored in the final report, with the mean outputs being visualized and not investigating margins of error and statistical significance of findings. This uncertainty could have been assessed through a Monte Carlo simulation of different variables and weightings throughout the code, illuminating how much the choices of researchers affect final vulnerability outcomes.
 
-There is lots of uncertainty in the original Malcomb et al. (2014) paper, with concerns about how data is aggregated, the scale to which it is aggregated, how the data is proprotionally normalized, and statistical distribution of vulnerability scores. This reproduction helps to tease out which variables impact the study by observing where decisions influence the output maps. In this light, I ask *How much does each subjective decision I make in my work impact the result?*
+Our attempt to reproduce this code was successful in creating vulnerability models for Malawi, but often did not match the original results by Malcomb et al. (2014). This failure is likely due to a lack of transparent data collection, lack of associated code for processing this data, and a lack of clarity towards how this data was used and aggregated in the analysis. There is lots of uncertainty in the original Malcomb et al. (2014) paper, with concerns about how data is aggregated, the scale to which it is aggregated, how the data is proprotionally normalized, and statistical distribution of vulnerability scores. For example, while Malcomb et al. (2014) provides a breakdown of proportionality, they do not quantify any of these values nor the scale at which they should be processed. This reproduction helps to tease out which variables impact the study by observing where decisions influence the output maps. In this light, I wonder:
+- *How much does each subjective decision I make in my work impact the result?*
+- *How much is the study dependent on specific community conditions?*
+- *Can conducting reproductions (using the same data and techniques to attempt same outputs) help with vulnerability model uncertainty?*
 
+To the first question, this reproduction could be improved by creating functions and for-loops to explore all reasonable scenarios where there is uncertainty or extensive opportunities for human bias. Some examples of where these functions would be useful are selecting which sources of income should be counted as assets and determining which scales of aggregation (TA vs. district) should be allowed. Using a "Monte Carlo" simulation that generates thousands of possibilities and combinations of variables and weightings in the data, we could determine more clearly how Malcomb et al. (2014) constructed their initial analysis. While it is inappropriate  to "nudge" our results to align with the original results from Malcomb et al. (2014), a Monte Carlo simulation could expose these uncertainties and lack of transparency in uncertainty analyses (Tate 2013).
 
-Can conducting reproductions (using the same data and techniques to attempt same outputs) help with vulnerability model uncertainty?
+In response to if this study is dependent on specific community conditions, I am beginning to recognize the challenges with using index analyses to model livelihood patterns. In conversations with Professor Jessica L'Roe over the past two years, we have often gone back and forth on the validity of normalizing and indexing spatial data in analyses of access and vulnerability. After completing this reproduction, I am in greater agreement with Professor L'Roe on the challenges of using indices and the importance of running statistical tests to determine the accuracy of spatial models in relationship to lived experiences. In our work with the Basic Needs Survey (BNS) conducted by the Wildlife Conservation Society in 50+ villages in 10 landscapes across West, Central, and East Africa, we emphasized multi-variate statistical tests with existing data, as opposed to normalizing and aggregating our results. While the outputs may have been less visually appealing than the  maps in this reproduction, Professor L'Roe's emphasis on the robustness of data and mitigating uncertainty has helped apply our initial analysis of the Ituri landscape to the nine other landscapes in the study.
 
-How much is the study dependent on specific community conditions?
-
-
-This reproduction could be improved by creating functions and for-loops to explore all reasonable scenarios where there is uncertainty or extensive opportunities for human bias. Some examples of where these functions would be useful are selecting which sources of income should be counted as assets and determining which scales of aggregation (TA vs. district) should be allowed. Using a "Monte Carlo" simulation
-
-There is a  major amount of uncertainty as to how the final outputs are normalized to one another. While the Malcomb et al. (2014) report provides a breakdown of proportionality, it does not quantify any of these values nor the scale at which they should be processed.
-
-It is innapropriate to "nudge" our results to align with the results from Malcomb et al. (2014). The lack of transparency with
 
 ## Conclusion
 
-This analysis illuminates the difficulties of reproducing existing scientific work and the value of transparent code in conducting more robust reserach.
-
-Restate the key findings and discuss their broader societal implications or contributions to theory.
-Do the research findings suggest a need for any future research?
+This analysis illuminates the difficulties of reproducing existing scientific work and the value of transparent code in conducting more robust reserach. While our map of Adaptive Capacity in the Traditional Authority boundaries comes fairly close to matching the results from Malcomb et al. (2014), our results do not align as well with the rasterized vulnerability map. The possible reasons for this inaccuracy and irreplicability are many, all based around a lack of transparency within the initial analysis towards data, aggregation, code, and processing capacities. These findings suggest a need for future reproductions of existing research that purport to provide replicable models of vulnerability and well-being across landscapes. For Malcomb et al. (2014) to truly have a *replicable* model for assessing vulnerability to climate change in landscapes outside Malawi, we first need to be able to *reproduce* this exact study in the original landscape. Only then will we have an additional tool for assessing vulnerability to climate change, and even then, we will need to factor in unique, local conditions to make these models beneficial in the lives of those who will be most harmed by these natural disasters.
 
 ## References
 
 Malcomb, D. W., E. A. Weaver, and A. R. Krakowka. 2014. Vulnerability modeling for sub-Saharan Africa: An operationalized approach in Malawi. *Applied Geography* 48:17–30. DOI:[10.1016/j.apgeog.2014.01.004](https://doi.org/10.1016/j.apgeog.2014.01.004)
 
 Tate, E. 2013. Uncertainty Analysis for a Social Vulnerability Index. *Annals of the Association of American Geographers* 103 (3):526–543. [doi:10.1080/00045608.2012.700616](http://www.tandfonline.com/doi/full/10.1080/00045608.2012.700616).
+
+### Background reserach informing this report (not directly cited in report)
+
+Flanagan, B., E. Hallisey, J. D. Sharpe, C. E. Mertzlufft, and M. Grossman. 2020. On the Validity of Validation: A Commentary on Rufat, Tate, Emrich, and Antolini’s “How Valid Are Social Vulnerability Models?” Annals of the American Association of Geographers 0 (0):1–6. DOI:[10.1080/24694452.2020.1857220](https://doi.org/10.1080/24694452.2020.1857220).
+
+Rufat, S., E. Tate, C. T. Emrich, and F. Antolini. 2019. How Valid Are Social Vulnerability Models? Annals of the American Association of Geographers 109 (4):1131–1153. DOI:[10.1080/24694452.2018.1535887](https://doi.org/10.1080/24694452.2018.1535887).
+
+Rufat, S., E. Tate, C. T. Emrich, and F. Antolini. 2020. Answer to the CDC: Validation Must Precede Promotion. Annals of the American Association of Geographers 0 (0):1–3. DOI: [10.1080/24694452.2020.1857221](https://doi.org/10.1080/24694452.2020.1857221).
+
+Sergio Rey -  AAG Annual Meeting on [Big Code](https://aag.secure-abstracts.com/AAG%20Annual%20Meeting%202021/sessions-gallery/27052)
 
 
 ####  Report Template References & License
